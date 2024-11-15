@@ -5,6 +5,10 @@ public class AmExercise {
         System.out.println("AM:8230014");
         System.out.println("ΑΜ:8230088");
         System.out.println("AM:8230068");
+<<<<<<< HEAD
         System.out.println("AM:8210219");
+=======
+        System.out.println("AM:8220136");
+>>>>>>> b1d325ce5acecf286f04704a09c888904f0c8b87
     }
 }
