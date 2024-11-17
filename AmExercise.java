@@ -8,5 +8,6 @@ public class AmExercise {
         System.out.println("AM:8210219");
         System.out.println("AM:8220136");
         System.out.println("AM:8220036");
+        System.out.println("AM:8210231");
     }
 }
