@@ -1,0 +1,26 @@
+From 8f0cb193c87716d5842d1f41b11d8ed5375c9878 Mon Sep 17 00:00:00 2001
+From: dimitr111adis <t8220036@aueb.gr>
+Date: Mon, 25 Nov 2024 19:53:48 +0200
+Subject: [PATCH 6/7] Update Form_Groupify.java
+
+---
+ Form_Groupify.java | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/Form_Groupify.java b/Form_Groupify.java
+index 5adbb78..c288e40 100644
+--- a/Form_Groupify.java
++++ b/Form_Groupify.java
+@@ -15,6 +15,9 @@ public class Form_Groupify {
+         System.out.println("E-mail");
+         String email = myObj.nextLine();
+ 
++        System.out.println("Κωδικός Μαθήματος");
++        int code = myObj.nextInt();
++
+         //Εδω αρχίζουν οι ερωτήσεις χαρακτήρα
+         System.out.println("1. Μπορώ να προσαρμοστώ εύκολα σε διαφορετικούς ρόλους μέσα στην ομάδα");
+         // 1 εως 5
+-- 
+2.42.0.windows.2
+

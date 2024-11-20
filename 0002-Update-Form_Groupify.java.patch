@@ -1,0 +1,38 @@
+From 2e9a4608c9614c7f3da070b9cd95e19298ed3e17 Mon Sep 17 00:00:00 2001
+From: dimitr111adis <t8220036@aueb.gr>
+Date: Mon, 25 Nov 2024 16:54:14 +0200
+Subject: [PATCH 2/7] Update Form_Groupify.java
+
+---
+ Form_Groupify.java | 18 ++++++++++++------
+ 1 file changed, 12 insertions(+), 6 deletions(-)
+
+diff --git a/Form_Groupify.java b/Form_Groupify.java
+index b2cc395..e86e25b 100644
+--- a/Form_Groupify.java
++++ b/Form_Groupify.java
+@@ -1,9 +1,15 @@
+-//Ερωτήσεις που σκέφτηκα για το ερωτηματολόγιο 
+-Αρχικά θα ζητάμε Όνομα, Επώνυμο,  Α.Μ.
+-//1. Ποιες ώρες είναι προτιμότερες ώστε να εργαστείς πάνω στην εργασία ;
+-    //Α. Αποδίδω καλύτερα και προτιμώ την μελέτη πρωινές ώρες 
+-    //Β. Αποδίδω καλύτερα και μελετάω συνήθως βραδινές ωρες
+-    //Γ. Είμαι ευέλικτος και έχω σχετικά σταθερή απόδοση ανεξαρτήτως ώρας
++import java.util.*;
++
++
++
++public class Form_Groupify {
++    public static void main(String[] args) {
++        Scanner scanner = new Scanner(System.in);
++        System.out.println("AM");
++        String AM = scanner.nextLine();
++
++    }
++}
+ 
+ 2. ΠΟΣΟ θα βαθμολογούσες τις επικοινωνιακές σου ικανότητες με τους συναδέλφους σου σε θέματα προσέγγισης της εργασίας
+     1 = Απουσία επικοινωνιακής ικανότητας
+-- 
+2.42.0.windows.2
+
