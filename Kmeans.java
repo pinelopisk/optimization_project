@@ -3,7 +3,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class MainMethod {
+public class Kmeans {
     public static void main(String [] args) {
             Scanner input = new Scanner(System.in);
             int st_n= input.nextInt();
