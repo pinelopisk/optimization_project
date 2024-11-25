@@ -10,10 +10,10 @@ public class MainMethod {
             int k=t_n;
             int q_n=20;
             Random random= new Random();
-            int[][] mainmatrix= new int[(st_n)+2][(t_n)+2];
+            int[][] mainmatrix= new int[(st_n)+4][(t_n)+4];
             int[][] centroids = new int[t_n][q_n];
-            for (int i=2; i<t_n; i++ ) {
-                for (int j=2; j<q_n; j++) {
+            for (int i=3; i<t_n; i++ ) {
+                for (int j=3; j<q_n; j++) {
                     centroids[i][j] = random.nextInt(5) + 1;
                 }
             }
