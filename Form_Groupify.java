@@ -15,6 +15,9 @@ public class Form_Groupify {
         System.out.println("E-mail");
         String email = myObj.nextLine();
 
+        System.out.println("Κωδικός Μαθήματος");
+        int code = myObj.nextInt();
+
         //Εδω αρχίζουν οι ερωτήσεις χαρακτήρα
         System.out.println("1. Μπορώ να προσαρμοστώ εύκολα σε διαφορετικούς ρόλους μέσα στην ομάδα");
         // 1 εως 5
