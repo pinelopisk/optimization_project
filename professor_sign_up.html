@@ -28,6 +28,7 @@
             font-size: 20px;
             padding: 20px 20px;
             text-decoration: none;
+            cursor: pointer;
         }
 
         li nav:hover:not(.active) {
@@ -93,16 +94,21 @@
         button:hover {
             background-color: #c172a5;
         }
+
+        #studentContainer, #groupContainer {
+            display: none;
+        }
     </style>
 </head>
 <body>
 
 <ul>
-    <li><nav href="#professor" class="active">Σύνδεση Καθηγητή</nav></li>
+    <li><nav id="professorTab" class="active">Σύνδεση ως Καθηγητής</nav></li>
+    <li><nav id="studentTab">Σύνδεση ως Μαθητής</nav></li>
 </ul>
 
 <div class="login-container" id="loginContainer">
-    <h1>Σύνδεση Καθηγητή</h1>
+    <h1>Σύνδεση ως Καθηγητής</h1>
     <form id="loginForm">
         <label for="username">Όνομα Χρήστη:</label>
         <input type="text" id="username" placeholder="Εισάγετε το όνομα χρήστη σας" required>
@@ -114,7 +120,7 @@
     </form>
 </div>
 
-<div class="login-container" id="groupContainer" style="display: none;">
+<div class="login-container" id="groupContainer">
     <h1>Ρύθμιση Ομάδων</h1>
     <form id="groupForm">
         <label for="groupCount">Αριθμός Ομάδων:</label>
@@ -127,11 +133,45 @@
     </form>
 </div>
 
+<div class="login-container" id="studentContainer">
+    <h1>Σύνδεση ως Μαθητής</h1>
+    <form>
+        <label for="am">Αριθμός Μητρώου:</label>
+        <input type="text" id="am" placeholder="Εισάγετε τον αριθμό μητρώου σας." required>
+
+        <label for="passwordStudent">Κωδικός:</label>
+        <input type="password" id="passwordStudent" placeholder="Εισάγετε τον κωδικό." required>
+
+        <button type="submit">Σύνδεση</button>
+    </form>
+</div>
+
 <script>
-    const loginForm = document.getElementById('loginForm');
+    const professorTab = document.getElementById('professorTab');
+    const studentTab = document.getElementById('studentTab');
     const loginContainer = document.getElementById('loginContainer');
     const groupContainer = document.getElementById('groupContainer');
+    const studentContainer = document.getElementById('studentContainer');
 
+    // Switch to professor tab
+    professorTab.addEventListener('click', () => {
+        professorTab.classList.add('active');
+        studentTab.classList.remove('active');
+        loginContainer.style.display = 'block';
+        groupContainer.style.display = 'none';
+        studentContainer.style.display = 'none';
+    });
+
+    // Switch to student tab
+    studentTab.addEventListener('click', () => {
+        studentTab.classList.add('active');
+        professorTab.classList.remove('active');
+        loginContainer.style.display = 'none';
+        groupContainer.style.display = 'none';
+        studentContainer.style.display = 'block';
+    });
+
+    const loginForm = document.getElementById('loginForm');
     loginForm.addEventListener('submit', function(event) {
         event.preventDefault();
         loginContainer.style.display = 'none';
@@ -150,3 +190,4 @@
 
 </body>
 </html>
+
