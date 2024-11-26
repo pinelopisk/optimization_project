@@ -107,6 +107,7 @@
     <li><nav id="studentTab">Σύνδεση ως Μαθητής</nav></li>
 </ul>
 
+<!-- Φόρμα Σύνδεσης Καθηγητή -->
 <div class="login-container" id="loginContainer">
     <h1>Σύνδεση ως Καθηγητής</h1>
     <form id="loginForm">
@@ -116,10 +117,14 @@
         <label for="password">Κωδικός:</label>
         <input type="password" id="password" placeholder="Εισάγετε τον κωδικό σας" required>
 
+        <label for="courseCode">Κωδικός Μαθήματος:</label>
+        <input type="text" id="courseCode" placeholder="Εισάγετε τον κωδικό του μαθήματος" required>
+
         <button type="submit">Σύνδεση</button>
     </form>
 </div>
 
+<!-- Φόρμα Ρύθμισης Ομάδων για Καθηγητή -->
 <div class="login-container" id="groupContainer">
     <h1>Ρύθμιση Ομάδων</h1>
     <form id="groupForm">
@@ -133,6 +138,7 @@
     </form>
 </div>
 
+<!-- Φόρμα Σύνδεσης Μαθητή -->
 <div class="login-container" id="studentContainer">
     <h1>Σύνδεση ως Μαθητής</h1>
     <form>
@@ -153,7 +159,7 @@
     const groupContainer = document.getElementById('groupContainer');
     const studentContainer = document.getElementById('studentContainer');
 
-    // Switch to professor tab
+    // Εναλλαγή στο Tab Καθηγητή
     professorTab.addEventListener('click', () => {
         professorTab.classList.add('active');
         studentTab.classList.remove('active');
@@ -162,7 +168,7 @@
         studentContainer.style.display = 'none';
     });
 
-    // Switch to student tab
+    // Εναλλαγή στο Tab Μαθητή
     studentTab.addEventListener('click', () => {
         studentTab.classList.add('active');
         professorTab.classList.remove('active');
@@ -190,4 +196,5 @@
 
 </body>
 </html>
+
 
