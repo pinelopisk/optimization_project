@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Καθηγητής - Διαχείριση Ομάδων</title>
+    <style>
+        ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #ffb3ff;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            text-align: center;
+        }
+
+        li {
+            display: inline-block;
+        }
+
+        li nav {
+            color: white;
+            font-family: Geologica;
+            font-size: 20px;
+            padding: 20px 20px;
+            text-decoration: none;
+        }
+
+        li nav:hover:not(.active) {
+            text-decoration: underline;
+        }
+
+        .active {
+            background-color: #f0d4fa;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0d4fa;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .login-container {
+            width: 400px;
+            padding: 40px;
+            background-color: #ffb3ff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 80px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #5c072b;
+            margin: 20px 0;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            font-weight: bold;
+        }
+
+        input[type="text"], input[type="password"], input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #e45ff1;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        button:hover {
+            background-color: #c172a5;
+        }
+    </style>
+</head>
+<body>
+
+<ul>
+    <li><nav href="#professor" class="active">Σύνδεση Καθηγητή</nav></li>
+</ul>
+
+<div class="login-container" id="loginContainer">
+    <h1>Σύνδεση Καθηγητή</h1>
+    <form id="loginForm">
+        <label for="username">Όνομα Χρήστη:</label>
+        <input type="text" id="username" placeholder="Εισάγετε το όνομα χρήστη σας" required>
+
+        <label for="password">Κωδικός:</label>
+        <input type="password" id="password" placeholder="Εισάγετε τον κωδικό σας" required>
+
+        <button type="submit">Σύνδεση</button>
+    </form>
+</div>
+
+<div class="login-container" id="groupContainer" style="display: none;">
+    <h1>Ρύθμιση Ομάδων</h1>
+    <form id="groupForm">
+        <label for="groupCount">Αριθμός Ομάδων:</label>
+        <input type="number" id="groupCount" placeholder="Πόσες ομάδες;" min="1" required>
+
+        <label for="membersPerGroup">Μέλη ανά Ομάδα:</label>
+        <input type="number" id="membersPerGroup" placeholder="Μέλη σε κάθε ομάδα;" min="1" required>
+
+        <button type="submit">Υποβολή</button>
+    </form>
+</div>
+
+<script>
+    const loginForm = document.getElementById('loginForm');
+    const loginContainer = document.getElementById('loginContainer');
+    const groupContainer = document.getElementById('groupContainer');
+
+    loginForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+        loginContainer.style.display = 'none';
+        groupContainer.style.display = 'block';
+    });
+
+    const groupForm = document.getElementById('groupForm');
+    groupForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+        const groupCount = document.getElementById('groupCount').value;
+        const membersPerGroup = document.getElementById('membersPerGroup').value;
+
+        alert(`Καθορίστηκαν ${groupCount} ομάδες με ${membersPerGroup} μέλη σε κάθε ομάδα.`);
+    });
+</script>
+
+</body>
+</html>
