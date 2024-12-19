@@ -66,7 +66,7 @@
         <p class="description">Κλίμακα μέτρησης: 1=Καθόλου 5=Πάρα πολύ</p>
         <h4>Στοιχεία Φοιτητή</h4>
         
-        <form>
+        <form action="Submit.jsp" method="post">
             <!-- Εισαγωγή στοιχείων χρήστη -->
             <div class="question">
                 <label for="am">Αριθμός Μητρώου (AM):</label>
