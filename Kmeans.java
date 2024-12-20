@@ -9,6 +9,7 @@ import javax.mail.internet.*;
 
 public class MainMethod {
     public static void main(String[] args) {
+        List<Students> students = RetrieveData.getStudents();
         String prof_mail;
         int st_n;
         int t_n;
