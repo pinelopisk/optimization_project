@@ -9,14 +9,21 @@ import javax.mail.internet.*;
 
 public class MainMethod {
     public static void main(String[] args) {
-        List<Students> students = RetrieveData.getStudents();
+        List<Students> mainList = RetrieveData.getStudents();
+        int rows = mainList.size();
+        int cols = mainList.get(0).size();
+        String[][] mainmatrix= new String[rows][cols];
+         for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+            mainmatrix[i][j] = mainList.get(i).get(j);
+            }
+         }
         String prof_mail;
         int st_n;
         int t_n;
         int k = t_n;
         int q_n = 20;
         Random random = new Random();
-        String[][] mainmatrix = new String[(st_n)][(t_n) + 4];
         int[][] centroids = new int[k][q_n];
         String[][] credentials = extractCredentials(mainmatrix, st_n);
         int[][] answers = extractAnswers(mainmatrix, st_n, q_n);
