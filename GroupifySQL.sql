@@ -1,6 +1,12 @@
-CREATE DATABASE IF NOT EXISTS QuestionnaireDB;
+CREATE DATABASE QuestionnaireDB;
 USE QuestionnaireDB;
 
+
+CREATE TABLE professors (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    arithmos_omadon INT NOT NULL,
+    email VARCHAR(255) NOT NULL
+);
 
 
 CREATE TABLE responses (
@@ -8,7 +14,6 @@ CREATE TABLE responses (
     am VARCHAR(50),
     name VARCHAR(100),
     surname VARCHAR(100),
-    email VARCHAR(100),
     q1 INT,
     q2 INT,
     q3 INT,
@@ -31,3 +36,4 @@ CREATE TABLE responses (
     q20 INT,
     team INT DEFAULT NULL
 );
+
