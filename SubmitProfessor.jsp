@@ -1,22 +1,31 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.sql.*" %>
 <%
+    // Ανάκτηση δεδομένων από τη φόρμα
     int arithmosOmadon = Integer.parseInt(request.getParameter("arithmos_omadon"));
     String email = request.getParameter("email");
+    int foitites = Integer.parseInt(request.getParameter("foitites"));
 
+    // Στοιχεία σύνδεσης στη βάση δεδομένων
     String url = "jdbc:mysql://localhost:3306/QuestionnaireDB";
-    String user = "root"; 
-    String password = "Rooney2003g"; 
+    String user = "root"; // Αλλάξτε το αν έχετε άλλο χρήστη
+    String password = "Rooney2003g"; // Βάλτε το password σας
+
     try {
+        // Σύνδεση με τη βάση δεδομένων
         Class.forName("com.mysql.cj.jdbc.Driver");
         Connection conn = DriverManager.getConnection(url, user, password);
 
-        String sql = "INSERT INTO professors (team, email) VALUES (?, ?)";
+        // SQL εντολή για εισαγωγή
+        String sql = "INSERT INTO professors (team, email, foitites) VALUES (?, ?, ?)";
         PreparedStatement pstmt = conn.prepareStatement(sql);
 
+        // Ρυθμίσεις παραμέτρων
         pstmt.setInt(1, arithmosOmadon);
         pstmt.setString(2, email);
+        pstmt.setInt(3, foitites);
 
+        // Εκτέλεση της εντολής
         pstmt.executeUpdate();
         conn.close();
 %>
