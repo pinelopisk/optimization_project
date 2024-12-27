@@ -2,22 +2,26 @@ import java.util.List;
 
 public class Student {
     private String name;
-    private int am;
-    private List<Integer> answers; // Δυναμική λίστα απαντήσεων
+    private String surname;
+    private String am;
+    private List<Integer> answers;
 
-    // Constructor
-    public Student(String name, int am, List<Integer> answers) {
+    public Student(String name, String surname, String am, List<Integer> answers) {
         this.name = name;
+        this.surname = surname;
         this.am = am;
         this.answers = answers;
     }
 
-    // Getters
     public String getName() {
         return name;
     }
 
-    public int getAm() {
+    public String getSurname() {
+        return surname;
+    }
+
+    public String getAm() {
         return am;
     }
 
@@ -29,7 +33,8 @@ public class Student {
     public String toString() {
         return "Student{" +
                 "name='" + name + '\'' +
-                ", am=" + am +
+                ", surname='" + surname + '\'' +
+                ", am='" + am + '\'' +
                 ", answers=" + answers +
                 '}';
     }

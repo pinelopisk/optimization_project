@@ -10,37 +10,23 @@ public class RetrieveData {
     public static List<Student> getStudents() {
         List<Student> students = new ArrayList<>();
 
-        String sql = "SELECT * FROM students"; // Επιλέγουμε όλα τα δεδομένα
+        String sql = "SELECT * FROM responses";
 
         try (Connection conn = DatabaseConnection.connect();
                 PreparedStatement stmt = conn.prepareStatement(sql);
                 ResultSet rs = stmt.executeQuery()) {
 
-            // Ανάκτηση των μεταδεδομένων για να βρούμε τις στήλες "answerX"
-            ResultSetMetaData metaData = rs.getMetaData();
-            List<String> answerColumns = new ArrayList<>();
-
-            // Εύρεση των στηλών που ξεκινούν με "answer"
-            for (int i = 1; i <= metaData.getColumnCount(); i++) {
-                String columnName = metaData.getColumnName(i);
-                if (columnName.startsWith("answer")) {
-                    answerColumns.add(columnName);
-                }
-            }
-
-            // Ανάκτηση δεδομένων ανά μαθητή
             while (rs.next()) {
                 String name = rs.getString("name");
-                int am = rs.getInt("am");
+                String surname = rs.getString("surname");
+                String am = rs.getString("am");
 
-                // Ανάκτηση των απαντήσεων δυναμικά
                 List<Integer> answers = new ArrayList<>();
-                for (String col : answerColumns) {
-                    answers.add(rs.getInt(col));
+                for (int i = 4; i <= 23; i++) {
+                    answers.add(rs.getInt(i));
                 }
 
-                // Δημιουργία αντικειμένου Student και προσθήκη στη λίστα
-                students.add(new Student(name, am, answers));
+                students.add(new Student(name, surname, am, answers));
             }
 
         } catch (Exception e) {
@@ -48,5 +34,39 @@ public class RetrieveData {
         }
 
         return students;
+    }
+
+    public static Professor getProfessorData() {
+        String sql = "SELECT email, arithmos_omadon FROM professors LIMIT 1";
+        int registeredStudents = 0;
+
+        try (Connection conn = DatabaseConnection.connect();
+                PreparedStatement stmt = conn.prepareStatement("SELECT COUNT(*) FROM responses");
+                ResultSet rs = stmt.executeQuery()) {
+
+            if (rs.next()) {
+                registeredStudents = rs.getInt(1);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try (Connection conn = DatabaseConnection.connect();
+                PreparedStatement stmt = conn.prepareStatement(sql);
+                ResultSet rs = stmt.executeQuery()) {
+
+            if (rs.next()) {
+                String email = rs.getString("email");
+                int numberOfTeams = rs.getInt("arithmos_omadon");
+
+                return new Professor(email, numberOfTeams, registeredStudents);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 }
