@@ -9,6 +9,7 @@ import javax.mail.internet.*;
 
 public class MainMethod {
     public static void main(String[] args) {
+        Professor professor = RetrieveData.getProfessorData();
         List<Students> mainList = RetrieveData.getStudents();
         int rows = mainList.size();
         int cols = mainList.get(0).size();
