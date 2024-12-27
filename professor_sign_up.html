@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Καθηγητής - Διαχείριση Ομάδων</title>
+    <title>Professor Sign Up</title>
     <style>
+   
+       
         ul {
             list-style-type: none;
             margin: 0;
@@ -28,7 +30,6 @@
             font-size: 20px;
             padding: 20px 20px;
             text-decoration: none;
-            cursor: pointer;
         }
 
         li nav:hover:not(.active) {
@@ -41,7 +42,7 @@
 
         body {
             font-family: Arial, sans-serif;
-            background-color: #rgb(231, 218, 233);
+            background-color: #f0d4fa;
             margin: 0;
             padding: 0;
             display: flex;
@@ -51,13 +52,14 @@
             height: 100vh;
         }
 
+       
         .login-container {
             width: 400px;
-            padding: 40px;
+            height: 580px;
+            padding: 50px;
             background-color: #ffb3ff;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            margin-top: 80px;
             text-align: center;
         }
 
@@ -68,11 +70,12 @@
 
         label {
             display: block;
-            margin: 10px 0 5px;
+            margin: 10px 10px 5px;
             font-weight: bold;
         }
 
-        input[type="text"], input[type="password"], input[type="number"] {
+        input[type="text"],
+        input[type="password"] {
             width: 100%;
             padding: 10px;
             margin-bottom: 15px;
@@ -92,109 +95,49 @@
         }
 
         button:hover {
-            background-color: #ae0fdae0;
+            background-color: #c172a5;
         }
 
-        #studentContainer, #groupContainer {
-            display: none;
+        .error {
+            color: red;
+            text-align: center;
+            margin-top: 10px;
         }
     </style>
 </head>
 <body>
 
+<!--
 <ul>
-    <li><nav id="professorTab" class="active">Σύνδεση ως Καθηγητής</nav></li>
-    <li><nav id="studentTab">Σύνδεση ως Μαθητής</nav></li>
+    <li><nav href="#professor">Σύνδεση Καθηγητή/Καθηγήτριας</nav></li>
+    <li><nav href="#student">Σύνδεση Φοιτητή/Φοιτήτριας</nav></li>
 </ul>
+-->
 
-<!-- Φόρμα Σύνδεσης Καθηγητή -->
-<div class="login-container" id="loginContainer">
-    <h1>Σύνδεση ως Καθηγητής</h1>
-    <form id="loginForm">
-        <label for="username">Όνομα Χρήστη:</label>
-        <input type="text" id="username" placeholder="Εισάγετε το όνομα χρήστη σας" required>
+<div class="login-container">
+    <h1>Σύνδεση Καθηγητή/Καθηγήτριας</h1>
+    <form>
+        <label for="name">Ονοματεπώνυμο:</label>
+        <input type="text" id="name" placeholder="Εισάγετε το ονοματεπώνυμό σας." required>
 
-        <label for="password">Κωδικός:</label>
-        <input type="password" id="password" placeholder="Εισάγετε τον κωδικό σας" required>
+        <label for="email">E-mail:</label>
+        <input type="text" id="email" placeholder="Εισάγετε το e-mail σας." required>
 
-        <label for="courseCode">Κωδικός Μαθήματος:</label>
-        <input type="text" id="courseCode" placeholder="Εισάγετε τον κωδικό του μαθήματος" required>
+        <!--<label for="password">Κωδικός Πρόσβασης:</label>
+        <input type="password" id="password" placeholder="Εισάγετε τον κωδικό πρόσβασης." required>-->
+		
+		<label for="subject">Κωδικός Μαθήματος:</label>
+        <input type="text" id="subject" placeholder="Εισάγετε τον κωδικό του μαθήματος που διδάσκετε." required>
 
-        <button type="submit">Σύνδεση</button>
-    </form>
-</div>
+        <label for="arithmos_omadwn">Αριθμός Ομάδων:</label>
+        <input type="text" id="arithmos_omadwn" placeholder="Εισάγετε τον αριθμό των ομάδων που θέλετε να δημιουργηθούν." required>
 
-<!-- Φόρμα Ρύθμισης Ομάδων για Καθηγητή -->
-<div class="login-container" id="groupContainer">
-    <h1>Ρύθμιση Ομάδων</h1>
-    <form id="groupForm">
-        <label for="groupCount">Αριθμός Ομάδων:</label>
-        <input type="number" id="groupCount" placeholder="Πόσες ομάδες;" min="1" required>
-
-        <label for="membersPerGroup">Μέλη ανά Ομάδα:</label>
-        <input type="number" id="membersPerGroup" placeholder="Μέλη σε κάθε ομάδα;" min="1" required>
+        <label for="arithmos_atomwn">Αριθμός Ατόμων ανά Ομάδα:</label>
+        <input type="text" id="arithmos_atomwn" placeholder="Εισάγετε τον αριθμό των ατόμων για κάθε ομάδα." required>
 
         <button type="submit">Υποβολή</button>
     </form>
 </div>
 
-<!-- Φόρμα Σύνδεσης Μαθητή -->
-<div class="login-container" id="studentContainer">
-    <h1>Σύνδεση ως Μαθητής</h1>
-    <form>
-        <label for="am">Αριθμός Μητρώου:</label>
-        <input type="text" id="am" placeholder="Εισάγετε τον αριθμό μητρώου σας." required>
-
-        <label for="passwordStudent">Κωδικός:</label>
-        <input type="password" id="passwordStudent" placeholder="Εισάγετε τον κωδικό." required>
-
-        <button type="submit">Σύνδεση</button>
-    </form>
-</div>
-
-<script>
-    const professorTab = document.getElementById('professorTab');
-    const studentTab = document.getElementById('studentTab');
-    const loginContainer = document.getElementById('loginContainer');
-    const groupContainer = document.getElementById('groupContainer');
-    const studentContainer = document.getElementById('studentContainer');
-
-    // Εναλλαγή στο Tab Καθηγητή
-    professorTab.addEventListener('click', () => {
-        professorTab.classList.add('active');
-        studentTab.classList.remove('active');
-        loginContainer.style.display = 'block';
-        groupContainer.style.display = 'none';
-        studentContainer.style.display = 'none';
-    });
-
-    // Εναλλαγή στο Tab Μαθητή
-    studentTab.addEventListener('click', () => {
-        studentTab.classList.add('active');
-        professorTab.classList.remove('active');
-        loginContainer.style.display = 'none';
-        groupContainer.style.display = 'none';
-        studentContainer.style.display = 'block';
-    });
-
-    const loginForm = document.getElementById('loginForm');
-    loginForm.addEventListener('submit', function(event) {
-        event.preventDefault();
-        loginContainer.style.display = 'none';
-        groupContainer.style.display = 'block';
-    });
-
-    const groupForm = document.getElementById('groupForm');
-    groupForm.addEventListener('submit', function(event) {
-        event.preventDefault();
-        const groupCount = document.getElementById('groupCount').value;
-        const membersPerGroup = document.getElementById('membersPerGroup').value;
-
-        alert(`Καθορίστηκαν ${groupCount} ομάδες με ${membersPerGroup} μέλη σε κάθε ομάδα.`);
-    });
-</script>
-
 </body>
 </html>
-
-
