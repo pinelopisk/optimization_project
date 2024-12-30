@@ -1,5 +1,7 @@
-CREATE DATABASE QuestionnaireDB;
+CREATE DATABASE IF NOT EXISTS QuestionnaireDB;
 USE QuestionnaireDB;
+ALTER TABLE professors
+ADD foitites INT DEFAULT 0;
 
 
 CREATE TABLE professors (
