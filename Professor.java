@@ -1,12 +1,12 @@
 public class Professor {
     private String email;
-    private int numberOfTeams;
+    private int numberOfStudents;
     private int registeredStudents;
 
     // Constructor
-    public Professor(String email, int numberOfTeams, int registeredStudents) {
+    public Professor(String email, int numberOfStudents, int registeredStudents) {
         this.email = email;
-        this.numberOfTeams = numberOfTeams;
+        this.numberOfStudents = numberOfStudents;
         this.registeredStudents = registeredStudents;
     }
 
@@ -15,8 +15,8 @@ public class Professor {
         return email;
     }
 
-    public int getNumberOfTeams() {
-        return numberOfTeams;
+    public int getNumberOfStudents() {
+        return numberOfStudents;
     }
 
     public int getRegisteredStudents() {
@@ -27,7 +27,7 @@ public class Professor {
     public String toString() {
         return "Professor{" +
                 "email='" + email + '\'' +
-                ", numberOfTeams=" + numberOfTeams +
+                ", numberOfStudents=" + numberOfStudents +
                 ", registeredStudents=" + registeredStudents +
                 '}';
     }
