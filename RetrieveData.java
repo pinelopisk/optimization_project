@@ -37,7 +37,7 @@ public class RetrieveData {
     }
 
     public static Professor getProfessorData() {
-        String sql = "SELECT email, arithmos_omadon FROM professors LIMIT 1";
+        String sql = "SELECT email, arithmos_atomwn FROM professors LIMIT 1";
         int registeredStudents = 0;
 
         try (Connection conn = DatabaseConnection.connect();
@@ -60,7 +60,7 @@ public class RetrieveData {
                 String email = rs.getString("email");
                 int numberOfTeams = rs.getInt("arithmos_omadon");
 
-                return new Professor(email, numberOfTeams, registeredStudents);
+                return new Professor(email, numberOfStudents, registeredStudents);
             }
 
         } catch (Exception e) {
