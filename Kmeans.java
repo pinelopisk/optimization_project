@@ -16,8 +16,8 @@ public class MainMethod {
        
         String prof_mail = professor.getEmail();
         int st_n = professor.getRegisteredStudents();
-        int t_n = professor.numberOfStudents();      
-        int k = st_n/t_n;
+        int n_o_s = professor.numberOfStudents();      
+        int k = st_n/n_o_s;
         int q_n = 20;                              
  
         Random random = new Random();
@@ -37,7 +37,7 @@ public class MainMethod {
         String results = formatClusters(clusters, credentials);
  
      
-        String subject = "Clustering Results";
+        String subject = "Team Results";
         sendEmail(prof_mail, subject, results);
     }
  
@@ -67,7 +67,7 @@ public class MainMethod {
  
     public static String formatClusters(List<List<Integer>> clusters, String[][] credentials) {
         StringBuilder sb = new StringBuilder();
-        sb.append("Clustering Results: \n");
+        sb.append("Here are the team results:\n\n");
         for (int i = 0; i < clusters.size(); i++) {
             sb.append("Team ").append(i + 1).append(":\n");
             for (int studentIndex : clusters.get(i)) {
@@ -85,7 +85,7 @@ public class MainMethod {
  
     public static void sendEmail(String recipient, String subject, String messageBody) {
         final String senderEmail = "groupify.9@gmail.com";
-        final String senderPassword = "123456789.groupify";
+        final String senderPassword = "prdr qzxm noji gmfx";
         Properties props = new Properties();
         props.put("mail.smtp.host", "smtp.gmail.com");
         props.put("mail.smtp.port", "587");
