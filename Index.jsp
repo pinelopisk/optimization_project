@@ -39,7 +39,7 @@
 </head>
 <body>
     <h1>Παρακαλώ επιλέξτε τύπο χρήστη</h1>
-    <button class="button" onclick="window.location.href='professor.jsp'">Καθηγητής</button>
+    <button class="button" onclick="window.location.href='professor_form.jsp'">Καθηγητής</button>
     <button class="button" onclick="window.location.href='form.jsp'">Φοιτητής</button>
 </body>
 </html>
