@@ -1,6 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.sql.*" %>
-<% 
+<%
+    
+
+   
     String am = request.getParameter("am");
     String name = request.getParameter("name");
     String surname = request.getParameter("surname");
@@ -109,8 +112,9 @@
 <body>
     <div class="message">
         <h2>Η υποβολή των απαντήσεών σας ολοκληρώθηκε με επιτυχία!</h2>
-        <a href="form.jsp">Επιστροφή στη Φόρμα</a>
-    </div>
+        <h2>Για τα αποτελέσματα θα ενημερωθείτε από τον καθηγητή σας.</h2>
+        <a href="Index.jsp">Επιστροφή στην αρχική σελίδα</a>
+   </div>
 </body>
 </html>
 <%
@@ -126,7 +130,7 @@
 <body>
     <h2>Υπήρξε σφάλμα κατά την αποθήκευση των απαντήσεών σας.</h2>
     <p><%= e.getMessage() %></p>
-    <a href="form.jsp">Επιστροφή στη Φόρμα</a>
+        <a href="Index.jsp">Επιστροφή στην αρχική σελίδα</a>
 </body>
 </html>
 <%
