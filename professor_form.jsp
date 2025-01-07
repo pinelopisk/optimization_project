@@ -1,145 +1,139 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.sql.*" %>
+<%
+    String fullname = request.getParameter("fullname");
+    int arithmos_atomwn = Integer.parseInt(request.getParameter("arithmos_atomwn"));
+    String email = request.getParameter("email");
+    int foitites = Integer.parseInt(request.getParameter("foitites"));
+
+    String url = "jdbc:mysql://localhost:3306/QuestionnaireDB";
+    String user = "root"; 
+    String password = "Rooney2003g"; 
+
+    int totalEntries = 0;
+    int totalStudents = 0; 
+
+    try {
+        Class.forName("com.mysql.cj.jdbc.Driver");
+        Connection conn = DriverManager.getConnection(url, user, password);
+
+        String countQuery = "SELECT COUNT(*) AS total_entries FROM responses";
+        Statement countStmt = conn.createStatement();
+        ResultSet countRs = countStmt.executeQuery(countQuery);
+
+        if (countRs.next()) {
+            totalEntries = countRs.getInt("total_entries");
+        }
+
+        String studentCountQuery = "SELECT COUNT(DISTINCT am) AS total_students FROM responses";
+        Statement studentCountStmt = conn.createStatement();
+        ResultSet studentCountRs = studentCountStmt.executeQuery(studentCountQuery);
+
+        if (studentCountRs.next()) {
+            totalStudents = studentCountRs.getInt("total_students");
+        }
+
+        String sql = "INSERT INTO professors (fullname, email, foitites, arithmos_atomwn) VALUES (?, ?, ?, ?)";
+        PreparedStatement pstmt = conn.prepareStatement(sql);
+
+        pstmt.setString(1, fullname);  
+        pstmt.setString(2, email);
+        pstmt.setInt(3, foitites);
+        pstmt.setInt(4, arithmos_atomwn);
+
+        pstmt.executeUpdate();
+
+        countRs.close();
+        countStmt.close();
+        studentCountRs.close();
+        studentCountStmt.close();
+        pstmt.close();
+        conn.close();
+%>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="el">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Professor Sign Up</title>
+    <title>Επιτυχία</title>
     <style>
-   
-       
-        ul {
-            list-style-type: none;
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-            background-color: #ffb3ff;
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 1000;
-            text-align: center;
-        }
-
-        li {
-            display: inline-block;
-        }
-
-        li nav {
-            color: white;
-            font-family: Geologica;
-            font-size: 20px;
-            padding: 20px 20px;
-            text-decoration: none;
-        }
-
-        li nav:hover:not(.active) {
-            text-decoration: underline;
-        }
-
-        .active {
-            background-color: #f0d4fa;
-        }
-
         body {
             font-family: Arial, sans-serif;
-            background-color: #f0d4fa;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
+            margin: 20px;
+            background-color: #e7dae9;
         }
-
-       
-        .login-container {
-            width: 400px;
-            height: 500px;
-            padding: 40px;
-            background-color: #ffb3ff;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        .message {
+            max-width: 600px;
+            margin: auto;
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 20px;
             text-align: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
-
-        h1 {
-            color: #5c072b;
-            margin: 20px 0;
+        .message h2 {
+            color: #333;
         }
-
-        label {
-            display: block;
-            margin: 10px 10px 5px;
-            font-weight: bold;
-        }
-
-        input[type="text"],
-        input[type="password"] {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 15px;
-            border: 1px solid #ccc;
+        a {
+            display: inline-block;
+            margin-top: 20px;
+            color: #000;
+            text-decoration: none;
+            background-color: #ae0fdae0;
+            padding: 10px 20px;
             border-radius: 5px;
+            font-size: 16px;
         }
-
-        button {
-            width: 100%;
-            padding: 10px;
-            background-color: #e45ff1;
-            color: white;
+        a:hover {
+            background-color: #ae0fda90;
+        }
+        
+        button[type="submit"] {
+            display: inline-block;
+            margin-top: 20px;
+            color: #000; 
+            background-color: #ae0fdae0;
+            padding: 10px 20px;
             border: none;
             border-radius: 5px;
+            font-size: 16px;
             cursor: pointer;
-            margin-top: 20px;
+            width: 256px; 
+            
         }
-
-        button:hover {
-            background-color: #c172a5;
-        }
-
-        .error {
-            color: red;
-            text-align: center;
-            margin-top: 10px;
+        button[type="submit"]:hover {
+            background-color: #ae0fda90;
         }
     </style>
 </head>
 <body>
+    <div class="message">
+        <h2>Τα στοιχεία του καθηγητή αποθηκεύτηκαν με επιτυχία!</h2>
+        <h2>Σύνολο μαθητών που έχουν συμπληρώσει τη φόρμα: <%= totalStudents %></h2>
 
-<!--
-<ul>
-    <li><nav href="#professor">Σύνδεση Καθηγητή/Καθηγήτριας</nav></li>
-    <li><nav href="#student">Σύνδεση Φοιτητή/Φοιτήτριας</nav></li>
-</ul>
--->
-<form action="SubmitProfessor.jsp" method="post"></form>
-<div class="login-container">
-    <h1>Σύνδεση Καθηγητή/Καθηγήτριας</h1>
-    <form>
-        <label for="name">Ονοματεπώνυμο:</label>
-        <input type="text" id="name" placeholder="Εισάγετε το ονοματεπώνυμό σας." required>
+        <form action="Kmeans.jsp" method="post">
+            <button type="submit" name="startKMeans">Χωρισμός σε Ομάδες</button>
+        </form>
 
-        <label for="email">E-mail:</label>
-        <input type="text" id="email" placeholder="Εισάγετε το e-mail σας." required>
-
-        <!--<label for="password">Κωδικός Πρόσβασης:</label>
-        <input type="password" id="password" placeholder="Εισάγετε τον κωδικό πρόσβασης." required>-->
-		
-		<!--
-        <label for="subject">Κωδικός Μαθήματος:</label>
-        <input type="text" id="subject" placeholder="Εισάγετε τον κωδικό του μαθήματος που διδάσκετε." required>
-        -->
-
-        <label for="foitites">Αριθμός Εγγεγραμμένων Φοιτητών:</label>
-        <input type="text" id="foitites" placeholder="Εισάγετε τον αριθμό των φοιτητών που είναι εγγεγραμμένοι στο μάθημα." required>
-
-        <label for="arithmos_atomwn">Αριθμός Ατόμων ανά Ομάδα:</label>
-        <input type="text" id="arithmos_atomwn" placeholder="Εισάγετε τον αριθμό των ατόμων για κάθε ομάδα." required>
-
-        <button type="submit">Υποβολή</button>
-    </form>
-</div>
-
+        <a href="Index.jsp">Επιστροφή στην αρχική σελίδα</a>
+    </div>
 </body>
 </html>
+<%
+    } catch (Exception e) {
+        e.printStackTrace();
+%>
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <title>Σφάλμα</title>
+</head>
+<body>
+    <h2>Υπήρξε σφάλμα κατά την αποθήκευση των στοιχείων του καθηγητή.</h2>
+    <p><%= e.getMessage() %></p>
+    <a href="Index.jsp">Επιστροφή στην αρχική σελίδα</a>
+</body>
+</html>
+<%
+    }
+%>
