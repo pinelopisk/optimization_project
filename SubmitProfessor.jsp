@@ -11,13 +11,12 @@
     String password = "Rooney2003g"; 
 
     int totalEntries = 0;
-    int totalStudents = 0;  // Μετρητής για τον αριθμό των μαθητών που έχουν συμπληρώσει τη φόρμα
+    int totalStudents = 0; 
 
     try {
         Class.forName("com.mysql.cj.jdbc.Driver");
         Connection conn = DriverManager.getConnection(url, user, password);
 
-        // Υπολογισμός του αριθμού εγγραφών
         String countQuery = "SELECT COUNT(*) AS total_entries FROM responses";
         Statement countStmt = conn.createStatement();
         ResultSet countRs = countStmt.executeQuery(countQuery);
@@ -26,7 +25,6 @@
             totalEntries = countRs.getInt("total_entries");
         }
 
-        // Υπολογισμός του αριθμού των διαφορετικών μαθητών που έχουν συμπληρώσει τη φόρμα
         String studentCountQuery = "SELECT COUNT(DISTINCT am) AS total_students FROM responses";
         Statement studentCountStmt = conn.createStatement();
         ResultSet studentCountRs = studentCountStmt.executeQuery(studentCountQuery);
@@ -35,7 +33,6 @@
             totalStudents = studentCountRs.getInt("total_students");
         }
 
-        // Εισαγωγή νέων δεδομένων
         String sql = "INSERT INTO professors (fullname, email, foitites, arithmos_atomwn) VALUES (?, ?, ?, ?)";
         PreparedStatement pstmt = conn.prepareStatement(sql);
 
@@ -46,7 +43,6 @@
 
         pstmt.executeUpdate();
 
-        // Κλείσιμο πόρων
         countRs.close();
         countStmt.close();
         studentCountRs.close();
