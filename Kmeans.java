@@ -1,25 +1,71 @@
 package GroupifyJava;
-import GroupifyJava.Student;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Properties;
 import java.util.Random;
-import javax.mail.*;
-import javax.mail.internet.*;
  
-public class MainMethod {
+
+ 
+public class Kmeans {
+ 
+    public static String DB_URL = "jdbc:mysql://localhost:3306/QuestionnaireDB";
+    public static String DB_USER = "root";
+    public static String DB_PASSWORD = "Rooney2003g";
+ 
     public static void main(String[] args) {
-       
-        Professor professor = RetrieveData.getProfessorData();
-        List<Student> mainList = RetrieveData.getStudents();
- 
-       
-        String prof_mail = professor.getEmail();
-        int st_n = professor.getRegisteredStudents();
-        int n_o_s = professor.numberOfStudents();      
+        String prof_mail = "";
+        int st_n = 0;
+        int n_o_s = 0;
         int k = st_n/n_o_s;
-        int q_n = 20;                              
+        int q_n = 20;
+
+        List<String[]> mainList = new ArrayList<>();
+        List<int[]> answersList = new ArrayList<>();
  
+        try (Connection conn = connectToDatabase()) {
+           
+            String sqlProfessor = "SELECT email, foitites, arithmos_atomwn FROM professors LIMIT 1";
+            try (PreparedStatement stmt = conn.prepareStatement(sqlProfessor);
+                 ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    prof_mail = rs.getString("email");
+                    st_n = rs.getInt("foitites");
+                    n_o_s = rs.getInt("arithmos_atomwn");
+                }
+            }
+ 
+            String sqlResponses = "SELECT name, surname, am, q1, q2, q3, q4, q5, q6, q7, q8, q9, q10, q11, q12, q13, q14, q15, q16, q17, q18, q19, q20 FROM responses";
+            try (PreparedStatement stmt = conn.prepareStatement(sqlResponses);
+                 ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    String name = rs.getString("name");
+                    String surname = rs.getString("surname");
+                    String am = rs.getString("am");
+                    mainList.add(new String[]{name, surname, am});
+ 
+                    int[] answers = new int[20];
+                    for (int i = 0; i < 20; i++) {
+                        answers[i] = rs.getInt("q" + (i + 1));
+                    }
+                    answersList.add(answers);
+                }
+            }
+ 
+        } catch (Exception e) {
+            e.printStackTrace();
+            return;
+        }
+
+        
+       
+    
+ 
+        
+        
         Random random = new Random();
         int[][] centroids = new int[k][q_n];
         for (int i = 0; i < k; i++) {
@@ -28,88 +74,37 @@ public class MainMethod {
             }
         }
  
-        String[][] credentials = extractCredentials(mainList);
-        int[][] answers = extractAnswers(mainList, st_n, q_n);
+ 
+        int[][] answers = answersList.toArray(new int[0][0]);
  
         List<List<Integer>> clusters = kMeansClustering(answers, centroids, k, q_n);
- 
-     
-        String results = formatClusters(clusters, credentials);
- 
-     
-        String subject = "Team Results";
-        sendEmail(prof_mail, subject, results);
-    }
- 
- 
-    public static String[][] extractCredentials(List<Student> students) {
-        int size = students.size();
-        String[][] credentials = new String[size][3];
-        for (int i = 0; i < size; i++) {
-            Student student = students.get(i);
-            credentials[i][0] = student.getName();
-            credentials[i][1] = student.getSurname();
-            credentials[i][2] = student.getAm();
-        }
-        return credentials;
-    }
- 
-    public static int[][] extractAnswers(List<Student> students, int st_n, int q_n) {
-        int[][] answers = new int[st_n][q_n];
-        for (int i = 0; i < st_n; i++) {
-            List<Integer> studentAnswers = students.get(i).getAnswers();
-            for (int j = 0; j < q_n; j++) {
-                answers[i][j] = studentAnswers.get(j);
-            }
-        }
-        return answers;
-    }
- 
-    public static String formatClusters(List<List<Integer>> clusters, String[][] credentials) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Here are the team results:\n\n");
+        clusters = rebalanceClusters(clusters, st_n, k);
+        System.out.println("Team results:");
+        System.out.println("Total teams: " + clusters.size());
         for (int i = 0; i < clusters.size(); i++) {
-            sb.append("Team ").append(i + 1).append(":\n");
-            for (int studentIndex : clusters.get(i)) {
-                sb.append("- ");
-                for (String value : credentials[studentIndex]) {
-                    sb.append(value).append(" ");
-                }
-                sb.append("\n");
+            System.out.print("team " + (i + 1) + ": ");
+            for (Integer studentIndex : clusters.get(i)) {
+                // Εκτύπωση του ονόματος, επωνύμου και κωδικού μαθητή
+                String[] student = mainList.get(studentIndex);
+                System.out.print(student[0] + " " + student[1] + " (" + student[2] + "), ");
             }
-            sb.append("\n");
+            System.out.println();
         }
-        return sb.toString();
+        
     }
  
- 
-    public static void sendEmail(String recipient, String subject, String messageBody) {
-        final String senderEmail = "groupify.9@gmail.com";
-        final String senderPassword = "prdr qzxm noji gmfx";
-        Properties props = new Properties();
-        props.put("mail.smtp.host", "smtp.gmail.com");
-        props.put("mail.smtp.port", "587");
-        props.put("mail.smtp.auth", "true");
-        props.put("mail.smtp.starttls.enable", "true");
-        Session session = Session.getInstance(props, new Authenticator() {
-            @Override
-            protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(senderEmail, senderPassword);
-            }
-        });
+    public static Connection connectToDatabase() {
         try {
-            MimeMessage message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(senderEmail));
-            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipient));
-            message.setSubject(subject);
-            message.setText(messageBody);
-            Transport.send(message);
-        } catch (MessagingException e) {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            return DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+        } catch (Exception e) {
             e.printStackTrace();
+            return null;
         }
     }
- 
    
+    
+ 
     public static List<List<Integer>> kMeansClustering(int[][] answers, int[][] centroids, int k, int q_n) {
         int numStudents = answers.length;
         boolean converged = false;
@@ -153,7 +148,6 @@ public class MainMethod {
                 }
             }
  
-           
             converged = true;
             for (int i = 0; i < k; i++) {
                 if (!areEqual(centroids[i], newCentroids[i])) {
@@ -183,4 +177,25 @@ public class MainMethod {
         }
         return true;
     }
-}
+    public static List<List<Integer>> rebalanceClusters(List<List<Integer>> clusters, int st_n, int n_o_s) {
+        List<List<Integer>> rebalancedClusters = new ArrayList<>();
+    
+        
+        for (int i = 0; i < n_o_s; i++) {
+            rebalancedClusters.add(new ArrayList<>());
+        }
+    
+        int groupIndex = 0;
+        for (List<Integer> cluster : clusters) {
+            for (Integer studentIndex : cluster) {
+                rebalancedClusters.get(groupIndex).add(studentIndex);
+                groupIndex = (groupIndex + 1) % n_o_s;
+            }
+        }
+    
+        return rebalancedClusters;
+    }
+    
+    
+    }
+ 
