@@ -17,10 +17,9 @@ public class Kmeans {
     public static String DB_PASSWORD = "Rooney2003g";
  
     public static void main(String[] args) {
-        String prof_mail = "";
+        
         int st_n = 0;
         int n_o_s = 0;
-        int k = st_n/n_o_s;
         int q_n = 20;
 
         List<String[]> mainList = new ArrayList<>();
@@ -32,7 +31,7 @@ public class Kmeans {
             try (PreparedStatement stmt = conn.prepareStatement(sqlProfessor);
                  ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    prof_mail = rs.getString("email");
+                    
                     st_n = rs.getInt("foitites");
                     n_o_s = rs.getInt("arithmos_atomwn");
                 }
@@ -65,6 +64,7 @@ public class Kmeans {
     
  
         
+        int k = st_n/n_o_s;
         
         Random random = new Random();
         int[][] centroids = new int[k][q_n];
@@ -84,7 +84,6 @@ public class Kmeans {
         for (int i = 0; i < clusters.size(); i++) {
             System.out.print("team " + (i + 1) + ": ");
             for (Integer studentIndex : clusters.get(i)) {
-                // Εκτύπωση του ονόματος, επωνύμου και κωδικού μαθητή
                 String[] student = mainList.get(studentIndex);
                 System.out.print(student[0] + " " + student[1] + " (" + student[2] + "), ");
             }
@@ -192,10 +191,10 @@ public class Kmeans {
                 groupIndex = (groupIndex + 1) % n_o_s;
             }
         }
-    
+
+     
         return rebalancedClusters;
     }
     
     
     }
- 
