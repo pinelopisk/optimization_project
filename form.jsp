@@ -67,7 +67,6 @@
         <h4>Στοιχεία Φοιτητή</h4>
         
         <form action="Submit.jsp" method="post">
-            <!-- Εισαγωγή στοιχείων χρήστη -->
             <div class="question">
                 <label for="am">Αριθμός Μητρώου (AM):</label>
                 <input type="text" id="am" name="am" required>
@@ -80,14 +79,9 @@
                 <label for="surname">Επώνυμο:</label>
                 <input type="text" id="surname" name="surname" required>
             </div>
-            <div class="question">
-                <label for="email">E-mail:</label>
-                <input type="email" id="email" name="email" required>
-            </div>
-
+           
             <h4>Ερωτήσεις Χαρακτήρα</h4>
 
-            <!-- Ερωτήσεις -->
             <div class="question">
                 <label>1. Μπορώ να προσαρμοστώ εύκολα σε διαφορετικούς ρόλους μέσα στην ομάδα;</label>
                 <div class="answers">
