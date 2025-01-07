@@ -1,5 +1,7 @@
 CREATE DATABASE IF NOT EXISTS QuestionnaireDB;
 USE QuestionnaireDB;
+SELECT COUNT(*) AS total_entries FROM responses;
+
 ALTER TABLE professors
 ADD foitites INT DEFAULT 0;
 
