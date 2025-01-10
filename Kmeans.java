@@ -176,11 +176,11 @@ public class Kmeans {
         }
         return true;
     }
-    public static List<List<Integer>> rebalanceClusters(List<List<Integer>> clusters, int st_n, int n_o_s) {
+    public static List<List<Integer>> rebalanceClusters(List<List<Integer>> clusters, int st_n, int k) {
         List<List<Integer>> rebalancedClusters = new ArrayList<>();
     
         
-        for (int i = 0; i < n_o_s; i++) {
+        for (int i = 0; i < k; i++) {
             rebalancedClusters.add(new ArrayList<>());
         }
     
@@ -188,7 +188,7 @@ public class Kmeans {
         for (List<Integer> cluster : clusters) {
             for (Integer studentIndex : cluster) {
                 rebalancedClusters.get(groupIndex).add(studentIndex);
-                groupIndex = (groupIndex + 1) % n_o_s;
+                groupIndex = (groupIndex + 1) % k;
             }
         }
 
