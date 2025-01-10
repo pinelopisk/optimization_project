@@ -31,7 +31,6 @@ public class KMeansTest {
 
     @Test
     public void testKMeansClustering() {
-        // Example input for kMeans clustering
         int[][] answers = {
             {1, 2, 3, 4, 5},
             {2, 3, 4, 5, 1},
@@ -51,7 +50,6 @@ public class KMeansTest {
 
     @Test
     public void testRebalanceClusters() {
-        // Create mock clusters with uneven sizes
         List<List<Integer>> clusters = List.of(
             List.of(0, 1),
             List.of(2, 3, 4)
