@@ -29,7 +29,7 @@ public class KmeansTest {
         int[] student1 = {1, 2, 3, 4, 5};
         int[] student2 = {5, 4, 3, 2, 1};
 
-        double expectedDistance = Math.sqrt(40); // (5-1)^2 + (4-2)^2 + (3-3)^2 + ...
+        double expectedDistance = Math.sqrt(40);
         double actualDistance = Kmeans.calculateDistance(student1, student2);
 
         assertEquals(expectedDistance, actualDistance, 0.0001, "Η απόσταση πρέπει να υπολογίζεται σωστά.");
