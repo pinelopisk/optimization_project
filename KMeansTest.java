@@ -68,7 +68,6 @@ public class KMeansTest {
     
     @Test
     public void testConnectToDatabase() {
-        // Simulate the database connection (mocking can be used if needed)
         try {
             assertNotNull(KMeans.connectToDatabase());
         } catch (Exception e) {
@@ -78,8 +77,6 @@ public class KMeansTest {
     
     @Test
     public void testMainMethod() {
-        // The main method is more difficult to test, so we can use mock or integration testing
-        // One approach could be to check if the code runs without exceptions
         try {
             KMeans.main(new String[]{});
         } catch (Exception e) {
