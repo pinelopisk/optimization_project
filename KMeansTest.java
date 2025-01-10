@@ -1,86 +1,116 @@
 package GroupifyJava;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-public class KMeansTest {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class KmeansTest {
+
+    private Kmeans kmeans;
+
+    @BeforeEach
+    public void setUp() {
+        kmeans = new Kmeans();
+    }
+
+    @Test
+    public void testDatabaseConnection() {
+        Connection conn = Kmeans.connectToDatabase();
+        assertNotNull(conn, "Η σύνδεση στη βάση δεδομένων πρέπει να είναι επιτυχής.");
+    }
 
     @Test
     public void testCalculateDistance() {
-        int[] student1 = {1, 2, 3};
-        int[] student2 = {4, 5, 6};
-        
-        double expected = Math.sqrt(Math.pow(1 - 4, 2) + Math.pow(2 - 5, 2) + Math.pow(3 - 6, 2));
-        double actual = KMeans.calculateDistance(student1, student2);
-        
-        assertEquals(expected, actual, 0.0001);
+        int[] student1 = {1, 2, 3, 4, 5};
+        int[] student2 = {5, 4, 3, 2, 1};
+
+        double expectedDistance = Math.sqrt(40); // (5-1)^2 + (4-2)^2 + (3-3)^2 + ...
+        double actualDistance = Kmeans.calculateDistance(student1, student2);
+
+        assertEquals(expectedDistance, actualDistance, 0.0001, "Η απόσταση πρέπει να υπολογίζεται σωστά.");
     }
 
     @Test
     public void testAreEqual() {
-        int[] centroid1 = {1, 2, 3};
-        int[] centroid2 = {1, 2, 3};
-        
-        assertTrue(KMeans.areEqual(centroid1, centroid2));
-        
-        int[] centroid3 = {4, 5, 6};
-        assertFalse(KMeans.areEqual(centroid1, centroid3));
+        int[] centroid1 = {1, 2, 3, 4, 5};
+        int[] centroid2 = {1, 2, 3, 4, 5};
+        int[] centroid3 = {5, 4, 3, 2, 1};
+
+        assertTrue(Kmeans.areEqual(centroid1, centroid2), "Τα δύο κέντρα πρέπει να θεωρούνται ίσα.");
+        assertFalse(Kmeans.areEqual(centroid1, centroid3), "Τα δύο κέντρα πρέπει να θεωρούνται διαφορετικά.");
     }
 
     @Test
     public void testKMeansClustering() {
         int[][] answers = {
             {1, 2, 3, 4, 5},
-            {2, 3, 4, 5, 1},
-            {4, 5, 1, 2, 3},
+            {5, 4, 3, 2, 1},
+            {1, 1, 1, 1, 1},
+            {5, 5, 5, 5, 5}
+        };
+
+        int[][] centroids = {
+            {1, 2, 3, 4, 5},
             {5, 4, 3, 2, 1}
         };
-        int[][] centroids = {
-            {2, 3, 4, 5, 1},
-            {4, 5, 1, 2, 3}
-        };
-        
-        List<List<Integer>> clusters = KMeans.kMeansClustering(answers, centroids, 2, 5);
-        
-        assertNotNull(clusters);
-        assertEquals(2, clusters.size());
+
+        int k = 2;
+        int q_n = 5;
+
+        List<List<Integer>> clusters = Kmeans.kMeansClustering(answers, centroids, k, q_n);
+
+        assertEquals(k, clusters.size(), "Ο αριθμός των ομάδων πρέπει να είναι ίσος με k.");
+        assertFalse(clusters.get(0).isEmpty(), "Η πρώτη ομάδα δεν πρέπει να είναι κενή.");
+        assertFalse(clusters.get(1).isEmpty(), "Η δεύτερη ομάδα δεν πρέπει να είναι κενή.");
     }
 
     @Test
     public void testRebalanceClusters() {
-        List<List<Integer>> clusters = List.of(
-            List.of(0, 1),
-            List.of(2, 3, 4)
-        );
-        
-        int st_n = 6;
+        List<List<Integer>> clusters = new ArrayList<>();
+        clusters.add(Arrays.asList(0, 1));
+        clusters.add(Arrays.asList(2, 3));
+
+        int st_n = 4;
         int n_o_s = 2;
-        
-        List<List<Integer>> rebalanced = KMeans.rebalanceClusters(clusters, st_n, n_o_s);
-        
-        // Ensure clusters are rebalanced
-        assertEquals(n_o_s, rebalanced.size());
-        assertTrue(rebalanced.get(0).size() <= 3);
-        assertTrue(rebalanced.get(1).size() <= 3);
-    }
-    
-    @Test
-    public void testConnectToDatabase() {
-        try {
-            assertNotNull(KMeans.connectToDatabase());
-        } catch (Exception e) {
-            fail("Database connection failed: " + e.getMessage());
+
+        List<List<Integer>> rebalancedClusters = Kmeans.rebalanceClusters(clusters, st_n, n_o_s);
+
+        assertEquals(n_o_s, rebalancedClusters.size(), "Ο αριθμός των ομάδων πρέπει να είναι ίσος με n_o_s.");
+        for (List<Integer> cluster : rebalancedClusters) {
+            assertFalse(cluster.isEmpty(), "Καμία ομάδα δεν πρέπει να είναι κενή.");
         }
     }
-    
+
     @Test
-    public void testMainMethod() {
-        try {
-            KMeans.main(new String[]{});
-        } catch (Exception e) {
-            fail("Main method failed: " + e.getMessage());
+    public void testClusterResults() {
+        List<String[]> mainList = new ArrayList<>();
+        mainList.add(new String[]{"Μάριος", "Μάντζαρης", "8230088"});
+        mainList.add(new String[]{"Άρτεμις", "Βαμβακάρη", "8230011"});
+        mainList.add(new String[]{"Βασιλική-Άρτεμις", "Λυμπέρη", "8230079"});
+        mainList.add(new String[]{"Θεμιστοκλής", "Μητρόπουλος", "8210219"});
+
+        List<List<Integer>> clusters = new ArrayList<>();
+        clusters.add(Arrays.asList(0, 2));
+        clusters.add(Arrays.asList(1, 3));
+
+        for (int i = 0; i < clusters.size(); i++) {
+            List<Integer> cluster = clusters.get(i);
+            System.out.print("Team " + (i + 1) + ": ");
+            for (Integer studentIndex : cluster) {
+                String[] student = mainList.get(studentIndex);
+                System.out.print(student[0] + " " + student[1] + " (" + student[2] + "), ");
+            }
+            System.out.println();
         }
+
+        assertEquals(2, clusters.size(), "Πρέπει να υπάρχουν 2 ομάδες.");
+        assertEquals(2, clusters.get(0).size(), "Η πρώτη ομάδα πρέπει να έχει 2 μέλη.");
+        assertEquals(2, clusters.get(1).size(), "Η δεύτερη ομάδα πρέπει να έχει 2 μέλη.");
     }
 }
+
