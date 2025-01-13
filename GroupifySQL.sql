@@ -1,15 +1,13 @@
 CREATE DATABASE IF NOT EXISTS QuestionnaireDB;
 USE QuestionnaireDB;
-SELECT COUNT(*) AS total_entries FROM responses;
 
-ALTER TABLE professors
-ADD foitites INT DEFAULT 0;
 
 
 CREATE TABLE professors (
     id INT AUTO_INCREMENT PRIMARY KEY,
     arithmos_omadon INT NOT NULL,
     email VARCHAR(255) NOT NULL
+    foitites INT DEFAULT 0;
 );
 
 
