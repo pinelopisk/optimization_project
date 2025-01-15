@@ -20,8 +20,13 @@ public class KmeansTest {
 
     @Test
     public void testDatabaseConnection() {
-        Connection conn = Kmeans.connectToDatabase();
-        assertNotNull(conn, "Η σύνδεση στη βάση δεδομένων πρέπει να είναι επιτυχής.");
+        try {
+            Connection conn = Kmeans.connectToDatabase();
+            assertNotNull(conn, "Η σύνδεση στη βάση δεδομένων πρέπει να είναι επιτυχής.");
+            conn.close();
+        } catch (Exception e) {
+            fail("Η σύνδεση στη βάση δεδομένων απέτυχε με εξαίρεση: " + e.getMessage());
+        }
     }
 
     @Test
@@ -33,6 +38,17 @@ public class KmeansTest {
         double actualDistance = Kmeans.calculateDistance(student1, student2);
 
         assertEquals(expectedDistance, actualDistance, 0.0001, "Η απόσταση πρέπει να υπολογίζεται σωστά.");
+    }
+
+    @Test
+    public void testCalculateDistanceWithIdenticalAnswers() {
+        int[] student1 = {3, 3, 3};
+        int[] student2 = {3, 3, 3};
+
+        double expectedDistance = 0.0;
+        double actualDistance = Kmeans.calculateDistance(student1, student2);
+
+        assertEquals(expectedDistance, actualDistance, 0.0001, "Η απόσταση δύο ίδιων απαντήσεων πρέπει να είναι 0.");
     }
 
     @Test
@@ -67,6 +83,9 @@ public class KmeansTest {
         assertEquals(k, clusters.size(), "Ο αριθμός των ομάδων πρέπει να είναι ίσος με k.");
         assertFalse(clusters.get(0).isEmpty(), "Η πρώτη ομάδα δεν πρέπει να είναι κενή.");
         assertFalse(clusters.get(1).isEmpty(), "Η δεύτερη ομάδα δεν πρέπει να είναι κενή.");
+        int totalStudents = Arrays.stream(answers).length;
+        int assignedStudents = clusters.stream().mapToInt(List::size).sum();
+        assertEquals(totalStudents, assignedStudents, "Όλοι οι φοιτητές πρέπει να ανήκουν σε ομάδες.");
     }
 
     @Test
@@ -84,6 +103,10 @@ public class KmeansTest {
         for (List<Integer> cluster : rebalancedClusters) {
             assertFalse(cluster.isEmpty(), "Καμία ομάδα δεν πρέπει να είναι κενή.");
         }
+        
+        int maxSize = rebalancedClusters.stream().mapToInt(List::size).max().orElse(0);
+        int minSize = rebalancedClusters.stream().mapToInt(List::size).min().orElse(0);
+        assertTrue(maxSize - minSize <= 1, "Οι ομάδες πρέπει να είναι ισορροπημένες.");
     }
 
     @Test
@@ -113,4 +136,5 @@ public class KmeansTest {
         assertEquals(2, clusters.get(1).size(), "Η δεύτερη ομάδα πρέπει να έχει 2 μέλη.");
     }
 }
+
 
