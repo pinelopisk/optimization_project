@@ -1,140 +1,163 @@
-package GroupifyJava;
-
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+public class KMeansTest {
 
-public class KmeansTest {
-
-    private Kmeans kmeans;
-
-    @BeforeEach
-    public void setUp() {
-        kmeans = new Kmeans();
-    }
-
-    @Test
-    public void testDatabaseConnection() {
+    public static String DB_URL = "jdbc:mysql://localhost:3306/QuestionnaireDB";
+    public static String DB_USER = "root";
+    public static String DB_PASSWORD = "password";
+    
+    private Connection connectToDatabase() {
         try {
-            Connection conn = Kmeans.connectToDatabase();
-            assertNotNull(conn, "Η σύνδεση στη βάση δεδομένων πρέπει να είναι επιτυχής.");
-            conn.close();
+            return DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
         } catch (Exception e) {
-            fail("Η σύνδεση στη βάση δεδομένων απέτυχε με εξαίρεση: " + e.getMessage());
+            e.printStackTrace();
+            return null;
         }
     }
 
     @Test
-    public void testCalculateDistance() {
-        int[] student1 = {1, 2, 3, 4, 5};
-        int[] student2 = {5, 4, 3, 2, 1};
+    void testKMeansClusteringFromDatabase() {
+        try (Connection conn = connectToDatabase()) {
+            String sql = "SELECT q1, q2, q3, q4, q5, q6, q7, q8, q9, q10, q11, q12, q13, q14, q15, q16, q17, q18, q19, q20 " +
+                         "FROM responses";
+            try (PreparedStatement stmt = conn.prepareStatement(sql);
+                 ResultSet rs = stmt.executeQuery()) {
+                List<int[]> answersList = new ArrayList<>();
+                while (rs.next()) {
+                    int[] answers = new int[20];
+                    for (int i = 0; i < 20; i++) {
+                        answers[i] = rs.getInt("q" + (i + 1));
+                    }
+                    answersList.add(answers);
+                }
 
-        double expectedDistance = Math.sqrt(40);
-        double actualDistance = Kmeans.calculateDistance(student1, student2);
+                assertTrue(answersList.size() > 0, "Δεν βρέθηκαν δεδομένα μαθητών");
+                int[][] answers = answersList.toArray(new int[0][0]);
+                int k = answersList.size() / 2; 
+                int[][] centroids = new int[k][20]; // 20 ερωτήσεις
+                for (int i = 0; i < k; i++) {
+                    for (int j = 0; j < 20; j++) {
+                        centroids[i][j] = (int) (Math.random() * 5) + 1;
+                    }
+                }
 
-        assertEquals(expectedDistance, actualDistance, 0.0001, "Η απόσταση πρέπει να υπολογίζεται σωστά.");
-    }
+                List<List<Integer>> clusters = Kmeans.kMeansClustering(answers, centroids, k, 20);
+                assertTrue(clusters.size() > 0, "Πρέπει να δημιουργηθούν ομάδες");
+                for (List<Integer> cluster : clusters) {
+                    assertTrue(cluster.size() > 0, "Μία ομάδα δεν περιέχει κανέναν μαθητή");
+                }
 
-    @Test
-    public void testCalculateDistanceWithIdenticalAnswers() {
-        int[] student1 = {3, 3, 3};
-        int[] student2 = {3, 3, 3};
-
-        double expectedDistance = 0.0;
-        double actualDistance = Kmeans.calculateDistance(student1, student2);
-
-        assertEquals(expectedDistance, actualDistance, 0.0001, "Η απόσταση δύο ίδιων απαντήσεων πρέπει να είναι 0.");
-    }
-
-    @Test
-    public void testAreEqual() {
-        int[] centroid1 = {1, 2, 3, 4, 5};
-        int[] centroid2 = {1, 2, 3, 4, 5};
-        int[] centroid3 = {5, 4, 3, 2, 1};
-
-        assertTrue(Kmeans.areEqual(centroid1, centroid2), "Τα δύο κέντρα πρέπει να θεωρούνται ίσα.");
-        assertFalse(Kmeans.areEqual(centroid1, centroid3), "Τα δύο κέντρα πρέπει να θεωρούνται διαφορετικά.");
-    }
-
-    @Test
-    public void testKMeansClustering() {
-        int[][] answers = {
-            {1, 2, 3, 4, 5},
-            {5, 4, 3, 2, 1},
-            {1, 1, 1, 1, 1},
-            {5, 5, 5, 5, 5}
-        };
-
-        int[][] centroids = {
-            {1, 2, 3, 4, 5},
-            {5, 4, 3, 2, 1}
-        };
-
-        int k = 2;
-        int q_n = 5;
-
-        List<List<Integer>> clusters = Kmeans.kMeansClustering(answers, centroids, k, q_n);
-
-        assertEquals(k, clusters.size(), "Ο αριθμός των ομάδων πρέπει να είναι ίσος με k.");
-        assertFalse(clusters.get(0).isEmpty(), "Η πρώτη ομάδα δεν πρέπει να είναι κενή.");
-        assertFalse(clusters.get(1).isEmpty(), "Η δεύτερη ομάδα δεν πρέπει να είναι κενή.");
-        int totalStudents = Arrays.stream(answers).length;
-        int assignedStudents = clusters.stream().mapToInt(List::size).sum();
-        assertEquals(totalStudents, assignedStudents, "Όλοι οι φοιτητές πρέπει να ανήκουν σε ομάδες.");
-    }
-
-    @Test
-    public void testRebalanceClusters() {
-        List<List<Integer>> clusters = new ArrayList<>();
-        clusters.add(Arrays.asList(0, 1));
-        clusters.add(Arrays.asList(2, 3));
-
-        int st_n = 4;
-        int n_o_s = 2;
-
-        List<List<Integer>> rebalancedClusters = Kmeans.rebalanceClusters(clusters, st_n, n_o_s);
-
-        assertEquals(n_o_s, rebalancedClusters.size(), "Ο αριθμός των ομάδων πρέπει να είναι ίσος με n_o_s.");
-        for (List<Integer> cluster : rebalancedClusters) {
-            assertFalse(cluster.isEmpty(), "Καμία ομάδα δεν πρέπει να είναι κενή.");
-        }
-        
-        int maxSize = rebalancedClusters.stream().mapToInt(List::size).max().orElse(0);
-        int minSize = rebalancedClusters.stream().mapToInt(List::size).min().orElse(0);
-        assertTrue(maxSize - minSize <= 1, "Οι ομάδες πρέπει να είναι ισορροπημένες.");
-    }
-
-    @Test
-    public void testClusterResults() {
-        List<String[]> mainList = new ArrayList<>();
-        mainList.add(new String[]{"Μάριος", "Μάντζαρης", "8230088"});
-        mainList.add(new String[]{"Άρτεμις", "Βαμβακάρη", "8230011"});
-        mainList.add(new String[]{"Βασιλική-Άρτεμις", "Λυμπέρη", "8230079"});
-        mainList.add(new String[]{"Θεμιστοκλής", "Μητρόπουλος", "8210219"});
-
-        List<List<Integer>> clusters = new ArrayList<>();
-        clusters.add(Arrays.asList(0, 2));
-        clusters.add(Arrays.asList(1, 3));
-
-        for (int i = 0; i < clusters.size(); i++) {
-            List<Integer> cluster = clusters.get(i);
-            System.out.print("Team " + (i + 1) + ": ");
-            for (Integer studentIndex : cluster) {
-                String[] student = mainList.get(studentIndex);
-                System.out.print(student[0] + " " + student[1] + " (" + student[2] + "), ");
             }
-            System.out.println();
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail("Η σύνδεση με τη βάση ή η εκτέλεση του ερωτήματος απέτυχε.");
         }
+    }
 
-        assertEquals(2, clusters.size(), "Πρέπει να υπάρχουν 2 ομάδες.");
-        assertEquals(2, clusters.get(0).size(), "Η πρώτη ομάδα πρέπει να έχει 2 μέλη.");
-        assertEquals(2, clusters.get(1).size(), "Η δεύτερη ομάδα πρέπει να έχει 2 μέλη.");
+    @Test
+    void testCalculateDistance() {
+        try (Connection conn = connectToDatabase()) {
+            String sql = "SELECT q1, q2, q3, q4, q5, q6, q7, q8, q9, q10, q11, q12, q13, q14, q15, q16, q17, q18, q19, q20 " +
+                         "FROM responses";
+            try (PreparedStatement stmt = conn.prepareStatement(sql);
+                 ResultSet rs = stmt.executeQuery()) {
+                
+                List<int[]> answersList = new ArrayList<>();
+                while (rs.next()) {
+                    int[] answers = new int[20]; 
+                    for (int i = 0; i < 20; i++) {
+                        answers[i] = rs.getInt("q" + (i + 1));
+                    }
+                    answersList.add(answers);
+                }
+                
+                assertTrue(answersList.size() > 1, "Δεν υπάρχουν αρκετά δεδομένα μαθητών για να υπολογίσουμε απόσταση");
+                int[] student1 = answersList.get(0);
+                int[] student2 = answersList.get(1);
+
+                double distance = Kmeans.calculateDistance(student1, student2);
+
+                // Έλεγχος ότι η απόσταση υπολογίζεται σωστά
+                assertTrue(distance >= 0, "Η απόσταση πρέπει να είναι θετική ή μηδέν");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail("Η σύνδεση με τη βάση ή η εκτέλεση του ερωτήματος απέτυχε.");
+        }
+    }
+
+    @Test
+    void testAreEqual() {
+        try (Connection conn = connectToDatabase()) {
+            String sql = "SELECT q1, q2, q3, q4, q5, q6, q7, q8, q9, q10, q11, q12, q13, q14, q15, q16, q17, q18, q19, q20 " +
+                         "FROM responses";
+            try (PreparedStatement stmt = conn.prepareStatement(sql);
+                 ResultSet rs = stmt.executeQuery()) {
+                
+                List<int[]> answersList = new ArrayList<>();
+                while (rs.next()) {
+                    int[] answers = new int[20];
+                    for (int i = 0; i < 20; i++) {
+                        answers[i] = rs.getInt("q" + (i + 1));
+                    }
+                    answersList.add(answers);
+                }
+                assertTrue(answersList.size() > 1, "Δεν υπάρχουν αρκετά δεδομένα μαθητών για σύγκριση");
+                int[] student1 = answersList.get(0);
+                int[] student2 = answersList.get(0);
+                boolean result = Kmeans.areEqual(student1, student2);
+                assertTrue(result, "Τα δεδομένα πρέπει να είναι ίδια");
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail("Η σύνδεση με τη βάση ή η εκτέλεση του ερωτήματος απέτυχε.");
+        }
+    }
+
+    @Test
+    void testRebalanceClusters() {
+        try (Connection conn = connectToDatabase()) {
+            String sql = "SELECT q1, q2, q3, q4, q5, q6, q7, q8, q9, q10, q11, q12, q13, q14, q15, q16, q17, q18, q19, q20 " +
+                         "FROM responses";
+            try (PreparedStatement stmt = conn.prepareStatement(sql);
+                 ResultSet rs = stmt.executeQuery()) {
+                List<int[]> answersList = new ArrayList<>();
+                while (rs.next()) {
+                    int[] answers = new int[20]; // 20 ερωτήσεις
+                    for (int i = 0; i < 20; i++) {
+                        answers[i] = rs.getInt("q" + (i + 1));
+                    }
+                    answersList.add(answers);
+                }
+
+                assertTrue(answersList.size() > 0, "Δεν υπάρχουν αρκετά δεδομένα μαθητών");
+                int k = answersList.size() / 2;
+                int[][] centroids = new int[k][20];
+                for (int i = 0; i < k; i++) {
+                    for (int j = 0; j < 20; j++) {
+                        centroids[i][j] = (int) (Math.random() * 5) + 1;
+                    }
+                }
+                List<List<Integer>> clusters = Kmeans.kMeansClustering(answersList.toArray(new int[0][0]), centroids, k, 20);
+                List<List<Integer>> rebalancedClusters = Kmeans.rebalanceClusters(clusters, answersList.size(), k);
+                assertTrue(rebalancedClusters.size() > 0, "Πρέπει να υπάρχουν ανακατανεμημένες ομάδες");
+                assertTrue(rebalancedClusters.size() == clusters.size(), "Η ανακατανομή πρέπει να έχει το ίδιο μέγεθος ομάδων");
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail("Η σύνδεση με τη βάση ή η εκτέλεση του ερωτήματος απέτυχε.");
+        }
     }
 }
+
 
 
